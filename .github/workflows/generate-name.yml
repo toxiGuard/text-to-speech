@@ -24,15 +24,16 @@ jobs:
         with:
           python-version: '3.12.0'
 
-      - name: Install ffmpeg
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
-
-      - name: Install dependencies
+      - name: Install Docker
         run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi 
+          sudo apt-get update
+          sudo apt-get install -y docker.io
 
-      - name: Run Python script to generate text to speech and save to MongoDB
+      - name: Pull Docker image with dependencies
+        run: |
+          docker pull ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest
+
+      - name: Run Python script using Docker container
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}  # MongoDB URI secret
           SPEECH_KEY: ${{ secrets.SPEECH_KEY }}  # Azure Speech API Key
@@ -40,4 +41,10 @@ jobs:
           EPISODE_ID: ${{ github.event.inputs.episode_id }}
           PROMPT: ${{ github.event.inputs.prompt }}
         run: |
-          python synthesize_speech.py 
+          docker run --rm \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            -e SPEECH_KEY=${{ secrets.SPEECH_KEY }} \
+            -e SPEECH_REGION=${{ secrets.SPEECH_REGION }} \
+            -e EPISODE_ID=${{ github.event.inputs.episode_id }} \
+            -e PROMPT=${{ github.event.inputs.prompt }} \
+            ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest python /app/synthesize_speech.py
