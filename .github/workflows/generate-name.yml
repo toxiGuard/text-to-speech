@@ -40,12 +40,18 @@ jobs:
               -e SPEECH_REGION=${{ secrets.SPEECH_REGION }} \
               -e EPISODE_ID=${{ github.event.inputs.episode_id }} \
               -e PROMPT="${{ github.event.inputs.prompt }}" \
-              ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest
+              ghcr.io/toxiguard/text-to-speech/dependency-image:latest || echo "Docker container failed to start.
 
 
-      - name: Show Docker container logs
+        - name: Show Docker container logs (if any)
         run: |
-          docker logs $(docker ps -q) || echo "No containers are running."
+          CONTAINER_ID=$(docker ps -q)
+          if [ -z "$CONTAINER_ID" ]; then
+            echo "No containers are running. Logs will not be available."
+          else
+            echo "Container logs:"
+            docker logs $CONTAINER_ID
+          fi
 
 
 
