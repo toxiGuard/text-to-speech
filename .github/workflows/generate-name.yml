@@ -25,6 +25,9 @@ jobs:
         with:
           python-version: '3.12.0'
 
+      - name: Login to GitHub Container Registry (GHCR)
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
       - name: Pull Docker image
         run: |
           docker pull ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest
