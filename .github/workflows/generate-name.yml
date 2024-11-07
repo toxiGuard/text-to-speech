@@ -28,10 +28,9 @@ jobs:
       - name: Log in to GitHub Container Registry (GHCR)
         run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-
       - name: Pull Docker image
         run: |
-          docker pull ghcr.io/toxiguard/text-to-speech/dependency-image:latest
+          docker pull ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest
 
       - name: Run Python script in Docker container
         run: |
@@ -41,4 +40,5 @@ jobs:
             -e SPEECH_REGION=${{ secrets.SPEECH_REGION }} \
             -e EPISODE_ID=${{ github.event.inputs.episode_id }} \
             -e PROMPT=${{ github.event.inputs.prompt }} \
-            ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest
+            ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest \
+            python /app/synthesize_speech.py
