@@ -24,13 +24,32 @@ jobs:
         with:
           python-version: '3.12.0'
 
-      - name: Install ffmpeg
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      # Cache Python dependencies
+      - name: Cache Python dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-
 
-      - name: Install dependencies
+      # Cache ffmpeg by downloading it only if not cached
+      - name: Cache ffmpeg installation
+        id: ffmpeg_cache
+        run: |
+          if ! [ -d "/usr/local/bin/ffmpeg" ]; then
+            echo "Installing ffmpeg"
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          else
+            echo "ffmpeg already installed, skipping..."
+          fi
+
+      # Install Python dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi 
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run Python script to generate text to speech and save to MongoDB
         env:
@@ -40,4 +59,4 @@ jobs:
           EPISODE_ID: ${{ github.event.inputs.episode_id }}
           PROMPT: ${{ github.event.inputs.prompt }}
         run: |
-          python synthesize_speech.py 
+          python synthesize_speech.py
