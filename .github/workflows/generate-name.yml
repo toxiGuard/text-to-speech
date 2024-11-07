@@ -43,7 +43,7 @@ jobs:
               ghcr.io/toxiguard/text-to-speech/dependency-image:latest || echo "Docker container failed to start.
 
 
-        - name: Show Docker container logs (if any)
+      - name: Show Docker container logs (if any)
         run: |
           CONTAINER_ID=$(docker ps -q)
           if [ -z "$CONTAINER_ID" ]; then
