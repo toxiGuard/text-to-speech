@@ -43,4 +43,9 @@ jobs:
               ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest
 
 
+      - name: Show Docker container logs
+        run: |
+          docker logs $(docker ps -q) || echo "No containers are running."
+
+
 
