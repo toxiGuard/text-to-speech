@@ -15,7 +15,6 @@ on:
 jobs:
   synthesize_speech:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -25,41 +24,20 @@ jobs:
         with:
           python-version: '3.12.0'
 
-    #  - name: Log in to GitHub Container Registry (GHCR)
-   #     run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }} 
-
-      - name: Pull Docker image
+      - name: Install dependencies
         run: |
-         docker pull ghcr.io/toxiguard/text-to-speech/test-image:new
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi 
 
-      - name: Run Python script in Docker container
+      - name: Run Python script to generate text to speech and save to MongoDB
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}  # MongoDB URI secret
+          SPEECH_KEY: ${{ secrets.SPEECH_KEY }}  # Azure Speech API Key
+          SPEECH_REGION: ${{ secrets.SPEECH_REGION }}  # Azure Speech Region
+          EPISODE_ID: ${{ github.event.inputs.episode_id }}
+          PROMPT: ${{ github.event.inputs.prompt }}
         run: |
-            docker run --rm \
-              -e MONGO_URI=${{ secrets.MONGO_URI }} \
-              -e SPEECH_KEY=${{ secrets.SPEECH_KEY }} \
-              -e SPEECH_REGION=${{ secrets.SPEECH_REGION }} \
-              -e EPISODE_ID=${{ github.event.inputs.episode_id }} \
-              -e PROMPT=${{ github.event.inputs.prompt }} \
-              ghcr.io/toxiguard/text-to-speech/dependency-image:latest || echo "Docker container failed to start.
-
-
-      - name: Show Docker container logs (if any)
-        run: |
-          CONTAINER_ID=$(docker ps -q)
-          if [ -z "$CONTAINER_ID" ]; then
-            echo "No containers are running. Logs will not be available."
-          else
-            echo "Container logs:"
-            docker logs $CONTAINER_ID
-          fi
-
-
-
+          python synthesize_speech.py 
