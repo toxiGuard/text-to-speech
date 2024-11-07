@@ -20,4 +20,5 @@ RUN pip install -r requirements.txt
 COPY synthesize_speech.py .
 
 # Specify the default command to run when the container starts
-CMD ["python", "synthesize_speech.py"]
+CMD ["python", "/app/synthesize_speech.py"]
+

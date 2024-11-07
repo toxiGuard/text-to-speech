@@ -30,9 +30,17 @@ jobs:
 
       - name: Pull Docker image
         run: |
-          docker pull ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest
+          docker pull ghcr.io/toxiguard/text-to-speech/dependency-image:latest
 
       - name: Run Python script in Docker container
         run: |
-          docker run --rm -e MONGO_URI=${{ secrets.MONGO_URI }} -e SPEECH_KEY=${{ secrets.SPEECH_KEY }} -e SPEECH_REGION=${{ secrets.SPEECH_REGION }} -e EPISODE_ID=${{ github.event.inputs.episode_id }} -e PROMPT="${{ github.event.inputs.prompt }}" ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest /bin/bash -c "python /app/synthesize_speech.py"
+            docker run --rm \
+              -e MONGO_URI=${{ secrets.MONGO_URI }} \
+              -e SPEECH_KEY=${{ secrets.SPEECH_KEY }} \
+              -e SPEECH_REGION=${{ secrets.SPEECH_REGION }} \
+              -e EPISODE_ID=${{ github.event.inputs.episode_id }} \
+              -e PROMPT="${{ github.event.inputs.prompt }}" \
+              ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest
+
+
 
