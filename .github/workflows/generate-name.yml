@@ -31,7 +31,7 @@ jobs:
 
       - name: Pull Docker image
         run: |
-          docker pull ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest
+          docker pull ghcr.io/toxiguard/text-to-speech/dependency-image:latest
 
       - name: Run Python script in Docker container
         run: |
