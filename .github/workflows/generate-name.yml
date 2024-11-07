@@ -41,5 +41,4 @@ jobs:
             -e SPEECH_REGION=${{ secrets.SPEECH_REGION }} \
             -e EPISODE_ID=${{ github.event.inputs.episode_id }} \
             -e PROMPT=${{ github.event.inputs.prompt }} \
-            ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest \
-            python /app/synthesize_speech.py
+            ghcr.io/toxiguard/text-to-speech/my-dependency-image:latest

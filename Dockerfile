@@ -16,4 +16,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install -r requirements.txt
 
-# After this, the container will exit without running the Python script
+# Copy your Python script into the container
+COPY synthesize_speech.py .
+
+# Specify the default command to run when the container starts
+CMD ["python", "synthesize_speech.py"]
