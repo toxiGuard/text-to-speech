@@ -1,0 +1,43 @@
+name: Generate Name and Save to MongoDB
+
+on:
+  workflow_dispatch:
+    inputs:
+      episode_id:
+        description: 'ID for the episode'
+        required: true
+        default: '123'
+      prompt:
+        description: 'Speech prompt to synthesize'
+        required: true
+        default: 'Hello, how are you?'
+
+jobs:
+  synthesize_speech:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12.0'
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi 
+
+      - name: Run Python script to generate text to speech and save to MongoDB
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}  # MongoDB URI secret
+          SPEECH_KEY: ${{ secrets.SPEECH_KEY }}  # Azure Speech API Key
+          SPEECH_REGION: ${{ secrets.SPEECH_REGION }}  # Azure Speech Region
+          EPISODE_ID: ${{ github.event.inputs.episode_id }}
+          PROMPT: ${{ github.event.inputs.prompt }}
+        run: |
+          python synthesize_speech.py 
