@@ -10,8 +10,8 @@ import sys
 # MongoDB Setup
 mongo_uri = os.getenv("MONGO_URI")
 client = MongoClient(mongo_uri)  
-db = client["test"]
-collection = db["test"]
+db = client["podcast-as-a-service"]
+collection = db["episode_library"]
 
 BGM_PATH = 'bgm.mp3'  # Background music path
 
@@ -82,7 +82,7 @@ def add_bgm_in_memory(speech_audio, bgm_path):
 
     return final_mix
 
-def save_audio_to_mongo(audio_data, audio_id):
+def save_audio_to_mongo(audio_data, episode_id):
     # Export the AudioSegment to a BytesIO buffer
     output_buffer = BytesIO()
     
@@ -107,16 +107,16 @@ def save_audio_to_mongo(audio_data, audio_id):
 
     # Update or create a new document with the audio data
     result = collection.update_one(
-        {"name": audio_id},  # Find by 'name' (or '_id' if you prefer)
-        {"$set": {"audio_data": audio_binary}},  # Update the audio_data field
+        {"episode_id": episode_id},  # Find by 'name' (or '_id' if you prefer)
+        {"$set": {"mp3_file": audio_binary}},  # Update the audio_data field
         upsert=True  # Create a new document if no match is found
     )
 
     # Check the result and print the appropriate message
     if result.upserted_id:
-        print(f"New audio created in MongoDB with ID '{audio_id}'")
+        print(f"New audio created in MongoDB with ID '{episode_id}'")
     else:
-        print(f"Audio updated in MongoDB with ID '{audio_id}'")
+        print(f"Audio updated in MongoDB with ID '{episode_id}'")
 
 
 
