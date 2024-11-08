@@ -5,13 +5,16 @@ from pydub import AudioSegment
 from pymongo import MongoClient
 from bson import Binary
 from io import BytesIO
-import sys
+import redis
 
 # MongoDB Setup
 mongo_uri = os.getenv("MONGO_URI")
 client = MongoClient(mongo_uri)  
 db = client["podcast-as-a-service"]
 collection = db["episode_library"]
+
+redis_url = os.getenv("REDIS_URI")
+redis_client = redis.Redis.from_url(redis_url)
 
 BGM_PATH = 'bgm.mp3'  # Background music path
 
@@ -112,6 +115,8 @@ def save_audio_to_mongo(audio_data, episode_id):
         upsert=True  # Create a new document if no match is found
     )
 
+    redis_client.sadd(episode_id,"audio_saved")
+
     # Check the result and print the appropriate message
     if result.upserted_id:
         print(f"New audio created in MongoDB with ID '{episode_id}'")
@@ -183,7 +188,6 @@ def save_audio_to_file(audio_data, filename="final_audio.mp3",  bitrate="24k", s
 #         save_audio_to_mongo(podcast_data, episode_id)  # Pass episode_id directly
 
 
-
 if __name__ == "__main__":
     episode_id = os.getenv("EPISODE_ID")
     prompt = os.getenv("PROMPT")
@@ -196,6 +200,8 @@ if __name__ == "__main__":
     else:
         print("storing in db")
         save_audio_to_mongo(podcast_data, episode_id) 
+
+        
 
 
   

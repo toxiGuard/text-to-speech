@@ -53,9 +53,9 @@ jobs:
 
       - name: Run Python script to generate text to speech and save to MongoDB
         env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}  # MongoDB URI secret
-          SPEECH_KEY: ${{ secrets.SPEECH_KEY }}  # Azure Speech API Key
-          SPEECH_REGION: ${{ secrets.SPEECH_REGION }}  # Azure Speech Region
+          MONGO_URI: ${{ secrets.MONGO_URI }}  
+          SPEECH_KEY: ${{ secrets.SPEECH_KEY }}  
+          SPEECH_REGION: ${{ secrets.SPEECH_REGION }}  
           EPISODE_ID: ${{ github.event.inputs.episode_id }}
           PROMPT: ${{ github.event.inputs.prompt }}
         run: |
