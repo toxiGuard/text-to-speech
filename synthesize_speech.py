@@ -1,5 +1,4 @@
 import os
-import io
 import azure.cognitiveservices.speech as speechsdk
 from pydub import AudioSegment
 from pymongo import MongoClient
