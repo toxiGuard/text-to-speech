@@ -13,6 +13,7 @@ db = client["podcast-as-a-service"]
 collection = db["episode_library"]
 
 redis_url = os.getenv("REDIS_URI")
+print(f"redu isue : {redis_url}")
 redis_client = redis.Redis.from_url(redis_url)
 
 BGM_PATH = 'bgm.mp3'  # Background music path
