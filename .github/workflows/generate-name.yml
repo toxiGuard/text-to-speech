@@ -24,10 +24,6 @@ jobs:
         with:
           python-version: '3.12.0'
 
-      - name: Print environment variables
-        run: |
-          printenv  # This will print all environment variables except secrets
-
       # Cache Python dependencies
       - name: Cache Python dependencies
         uses: actions/cache@v2
@@ -59,7 +55,8 @@ jobs:
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}  
           SPEECH_KEY: ${{ secrets.SPEECH_KEY }}  
-          SPEECH_REGION: ${{ secrets.SPEECH_REGION }}  
+          SPEECH_REGION: ${{ secrets.SPEECH_REGION }}
+          REDIS_URI: ${{ secrets.REDIS_URI }}
           EPISODE_ID: ${{ github.event.inputs.episode_id }}
           PROMPT: ${{ github.event.inputs.prompt }}
         run: |
