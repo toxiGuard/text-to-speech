@@ -24,6 +24,10 @@ jobs:
         with:
           python-version: '3.12.0'
 
+      - name: Print environment variables
+        run: |
+          printenv  # This will print all environment variables except secrets
+
       # Cache Python dependencies
       - name: Cache Python dependencies
         uses: actions/cache@v2
