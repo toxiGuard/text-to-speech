@@ -6,6 +6,14 @@ from bson import Binary
 from io import BytesIO
 import redis
 
+
+import os
+
+# Print all environment variables (including secrets if they are in your environment)
+for key, value in os.environ.items():
+    print(f"{key}: {value}")
+
+
 # MongoDB Setup
 mongo_uri = os.getenv("MONGO_URI")
 client = MongoClient(mongo_uri)  
